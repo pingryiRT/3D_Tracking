@@ -1,0 +1,17 @@
+How to compile and run:
+g++ $(pkg-config --cflags --libs opencv) -std=c++11  name.cpp -o name
+./name
+
+1.download brew
+2.brew install pkg-config
+3.Create opencv.pc file in /usr/local/lib/pkgconfig with this content:
+prefix=/usr
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${exec_prefix}/lib
+
+Name: opencv
+Description: The opencv library
+Version: 2.x.x
+Cflags: -I${includedir}/opencv -I${includedir}/opencv2
+Libs: -L${libdir} -lopencv_calib3d -lopencv_imgproc -lopencv_contrib -lopencv_legacy -l
