@@ -34,10 +34,8 @@ bool compCont(vector<Point> contour1, vector<Point> contour2){
 	double j = contourArea(contour2,false);
 	return (i > j);
 }
-float * radialAveraging(Mat im, int ctrX, int ctrY, int maxRadius){//takes in ORIGINAL BLACK AND WHITE NON-THRESHOLDED cropped image, (x,y) is the center
-  float rad[maxRad];
-  for(int j = 0; j < maxRad; j++)
-    rad[j] = -1;
+vector<float> radialAveraging(Mat im, int ctrX, int ctrY, int maxRadius){//takes in ORIGINAL BLACK AND WHITE NON-THRESHOLDED cropped image, (x,y) is the center
+  vector<float> rad(maxRadius);
   int offsetX, y, numpts = 0;
   long sum = 0;
   for(int r = 0; r < maxRadius; r++){//for every radius
@@ -66,7 +64,7 @@ float * radialAveraging(Mat im, int ctrX, int ctrY, int maxRadius){//takes in OR
 }
 int main(int argc, char** argv){
     //get image
-    float * rad;
+    vector<float> rad(maxRad);
     String imageName("unnamed.png");
     Mat og = imread(imageName, IMREAD_COLOR);
     Mat newIm=og.clone();
