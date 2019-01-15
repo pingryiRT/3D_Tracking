@@ -21,7 +21,6 @@ using namespace cv;
 using namespace std;
 #define maxRad 200
 
-float rad[maxRad];//for some reason returning a pointer is not working
 
 
 int min(int a, int b){
@@ -35,7 +34,10 @@ bool compCont(vector<Point> contour1, vector<Point> contour2){
 	double j = contourArea(contour2,false);
 	return (i > j);
 }
-void radialAveraging(Mat im, int ctrX, int ctrY, int maxRadius){//takes in ORIGINAL BLACK AND WHITE NON-THRESHOLDED cropped image, (x,y) is the center
+float * radialAveraging(Mat im, int ctrX, int ctrY, int maxRadius){//takes in ORIGINAL BLACK AND WHITE NON-THRESHOLDED cropped image, (x,y) is the center
+  float rad[maxRad];
+  for(int j = 0; j < maxRad; j++)
+    rad[j] = -1;
   int offsetX, y, numpts = 0;
   long sum = 0;
   for(int r = 0; r < maxRadius; r++){//for every radius
@@ -60,10 +62,11 @@ void radialAveraging(Mat im, int ctrX, int ctrY, int maxRadius){//takes in ORIGI
   }
   namedWindow("contours",0);
   imshow("contours",im);
+  return rad;
 }
-
 int main(int argc, char** argv){
     //get image
+    float * rad;
     String imageName("unnamed.png");
     Mat og = imread(imageName, IMREAD_COLOR);
     Mat newIm=og.clone();
@@ -99,11 +102,8 @@ int main(int argc, char** argv){
          if(approx.size() > 8 && radius*radius*PI/contourArea(contours[i]) < 1.3 && contourArea(contours[i]) > minArea){//airy pattern: inner ring, 15% margin or error, previous values: 8, 1.3
           //cout << "(" << center.x << "," << center.y << "):" << endl;//ANSWERS
           circle(newIm, center,4, Scalar(125),CV_FILLED);
-          for(int j = 0; j < maxRad; j++){
-            rad[j] = -1;
-          }
           int maxRadius = min(maxRad,min(min(center.x,center.y),min(og.cols-center.x,og.rows-center.y)));
-          radialAveraging(og, center.x, center.y,maxRadius);
+          rad = radialAveraging(og, center.x, center.y,maxRadius);
          }
       }
     }
